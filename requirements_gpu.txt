@@ -1,0 +1,31 @@
+# change to cu132 if higher cuda toolkit version (13.2)
+# comment if cuda version is 13.0
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+# Core
+numpy~=2.4
+opencv-python~=4.13
+Pillow~=12.2
+PyYAML~=6.0.3
+tqdm~=4.68
+requests~=2.34
+
+# export onnx
+onnx~=1.22
+onnxscript~=0.7
+
+# Inference
+onnxruntime-gpu~=1.26
+torch~=2.12.0
+torchvision~=0.27
+
+# Face alignment
+scikit-image~=0.26
+
+# Tracking
+scipy~=1.17
+
+# Utilities
+matplotlib~=3.11
+pandas~=3.0
+seaborn~=0.13

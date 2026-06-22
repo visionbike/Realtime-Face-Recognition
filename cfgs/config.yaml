@@ -1,0 +1,19 @@
+detector:
+  nms_threshold: 0.4
+  conf_threshold: 0.5
+
+tracker:
+  track_threshold: 0.5
+  match_threshold: 0.8
+  dup_iou_dist_threshold: 0.15
+  aspect_ratio_threshold: 1.6
+  min_box_area: 10
+
+recognizer:
+  similarity_threshold: 0.5
+  match_iou_threshold: 0.8
+  unknown_retry_interval: 1.0
+  unknown_fast_interval: 0.1
+  unknown_fast_retries: 5
+  min_face_size: 60
+  edge_margin: 8
