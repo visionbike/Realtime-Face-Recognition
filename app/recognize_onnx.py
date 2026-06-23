@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 import sys
 import time
 import threading
@@ -11,7 +11,7 @@ import yaml
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
-from core.detector.scrfd_onnx import SCRFDONNX
+from core.detector.scrfd_onnx import ScrfdONNX
 from core.recognizer.arcface_onnx import ArcFaceONNX
 from core.recognizer.feature_store import read_features, compare_embeddings
 from core.aligner.alignment import align_face
@@ -44,14 +44,14 @@ def load_config(config_path: Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
-def build_models(config: dict) -> tuple[SCRFDONNX, ArcFaceONNX]:
+def build_models(config: dict) -> tuple[ScrfdONNX, ArcFaceONNX]:
     """
     Instantiate the SCRFD detector and the ONNX ArcFace recognizer.
     :param config: Parsed config dict.
     :return: Initialized face detector and recognizer.
     """
     det_cfg = config.get("detector", {})
-    detector = SCRFDONNX(
+    detector = ScrfdONNX(
         model_file=str(DETECTOR_WEIGHTS),
         conf_threshold=det_cfg.get("conf_threshold", 0.5),
         nms_threshold=det_cfg.get("nms_threshold", 0.4)
@@ -70,7 +70,7 @@ class FaceRecognizer:
     def __init__(
         self,
         config: dict,
-        detector: SCRFDONNX,
+        detector: ScrfdONNX,
         recognizer: ArcFaceONNX,
         image_names: np.ndarray,
         image_embeddings: np.ndarray,
@@ -133,10 +133,10 @@ class FaceRecognizer:
         :param box2: Second bounding box.
         :return: IoU score.
         """
-        x_min_inter = max(box1[0], box2[0])
-        y_min_inter = max(box1[1], box2[1])
-        x_max_inter = min(box1[2], box2[2])
-        y_max_inter = min(box1[3], box2[3])
+        x_min_inter = cast(float, max(box1[0], box2[0]))
+        y_min_inter = cast(float, max(box1[1], box2[1]))
+        x_max_inter = cast(float, min(box1[2], box2[2]))
+        y_max_inter = cast(float, min(box1[3], box2[3]))
 
         intersection_area = max(0, x_max_inter - x_min_inter + 1) * max(0, y_max_inter - y_min_inter + 1)
         area_box1 = (box1[2] - box1[0] + 1) * (box1[3] - box1[1] + 1)
@@ -337,9 +337,13 @@ class FaceRecognizer:
 
         :param source: OpenCV VideoCapture source (camera index or path).
         """
-        threading.Thread(target=self._capture_loop, args=(source,), daemon=True).start()
-        threading.Thread(target=self._tracking_loop, daemon=True).start()
-        threading.Thread(target=self._recognition_loop, daemon=True).start()
+        threads = [
+            threading.Thread(target=self._capture_loop, args=(source,), daemon=True),
+            threading.Thread(target=self._tracking_loop, daemon=True),
+            threading.Thread(target=self._recognition_loop, daemon=True)
+        ]
+        for t in threads:
+            t.start()
 
         try:
             # OpenCV GUI must run on the main thread
@@ -352,6 +356,8 @@ class FaceRecognizer:
                     break
         finally:
             self._stop.set()
+            for t in threads:
+                t.join(timeout=2.0)      # let workers exit their loop cleanly
             cv2.destroyAllWindows()
 
 

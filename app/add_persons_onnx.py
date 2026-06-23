@@ -11,7 +11,8 @@ from tqdm import tqdm
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
-from core.detector.scrfd_onnx import SCRFD
+from core.constants import IMAGE_EXTS
+from core.detector.scrfd_onnx import ScrfdONNX
 from core.recognizer.arcface_onnx import ArcFaceONNX
 from core.recognizer.feature_store import read_features
 from core.aligner.alignment import align_face
@@ -23,8 +24,6 @@ DEVICE_ID = -1
 CONFIG_PATH = ROOT_DIR / "cfgs" / "config.yaml"
 DETECTOR_WEIGHTS = ROOT_DIR / "weights" / "detection" / "scrfd_2.5g_bnkps.onnx"
 RECOGNIZER_WEIGHTS = ROOT_DIR / "weights" / "recognition" / "arcface_r100_int8.onnx"
-
-IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
 
 
 def load_config(config_path: Path) -> dict:
@@ -40,7 +39,7 @@ def load_config(config_path: Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
-def build_models(config: dict) -> tuple[SCRFD, ArcFaceONNX]:
+def build_models(config: dict) -> tuple[ScrfdONNX, ArcFaceONNX]:
     """
     Instantiate the SCRFD detector and the ArcFace recognizer.
 
@@ -48,7 +47,7 @@ def build_models(config: dict) -> tuple[SCRFD, ArcFaceONNX]:
     :return: Initialized face detector and recognizer.
     """
     det_cfg = config.get("detector", {})
-    detector = SCRFD(
+    detector = ScrfdONNX(
         model_file=str(DETECTOR_WEIGHTS),
         conf_threshold=det_cfg.get("conf_threshold", 0.5),
         nms_threshold=det_cfg.get("nms_threshold", 0.4)
@@ -106,7 +105,7 @@ def add_persons(
                 face_image = align_face(input_image, landmarks[i].astype(np.float32))
 
                 number_files = len(list(person_face_path.glob("*.jpg")))
-                cv2.imwrite(str(person_face_path / f"{number_files}.jpg"), face_image)
+                cv2.imwrite(str(person_face_path / f"{person_path.name}_{number_files}.jpg"), face_image)
 
                 # ArcFaceONNX takes the BGR crop directly (blobFromImage handles BGR->RGB + scaling)
                 image_embeddings.append(recognizer.get_feature(face_image))

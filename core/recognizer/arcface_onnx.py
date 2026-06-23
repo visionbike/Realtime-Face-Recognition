@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import cast
 import cv2
 import numpy as np
 import onnxruntime as ort
@@ -73,5 +74,5 @@ class ArcFaceONNX:
         blob = cv2.dnn.blobFromImage(
             face_image, 1.0 / 127.5, self.input_size, (127.5, 127.5, 127.5), swapRB=True
         )
-        embedding = self.session.run(self.output_names, {self.input_name: blob})[0][0]
+        embedding = cast(np.ndarray, self.session.run(self.output_names, {self.input_name: blob})[0])[0]
         return embedding / np.linalg.norm(embedding)
