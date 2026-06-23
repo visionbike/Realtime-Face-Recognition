@@ -12,8 +12,8 @@ tracker:
 recognizer:
   similarity_threshold: 0.5
   match_iou_threshold: 0.8
-  unknown_retry_interval: 1.0
-  unknown_fast_interval: 0.1
-  unknown_fast_retries: 5
+  unknown_retry_interval: 5.0
+  unknown_fast_interval: 0.01
+  unknown_fast_retries: 3
   min_face_size: 60
   edge_margin: 8
