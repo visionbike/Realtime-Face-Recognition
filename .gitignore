@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Model weights (large binaries — use LFS or a download script)
+weights/
+*.pth
+*.onnx
+
+# Datasets — ignore everything except calib/
+datasets/*
+!datasets/calib/
+*.npz
