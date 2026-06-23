@@ -124,7 +124,8 @@ def draw_detections(
         y1 = int(box[3])
 
         color = (_COLORS[cls_id] * 255).astype(np.uint8).tolist()
-        text = f"{class_names[cls_id]}:{(score * 100):.1f}%"
+        label = class_names[cls_id] if class_names is not None else str(cls_id)
+        text = f"{label}:{(score * 100):.1f}%"
         txt_color = (0, 0, 0) if np.mean(_COLORS[cls_id]) > 0.5 else (255, 255, 255)
         font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -181,19 +182,17 @@ def plot_tracking(
     names = names or {}
     im = np.ascontiguousarray(np.copy(image))
 
-    text_scale = 2
-    text_thickness = 2
+    text_scale = 1.5
+    text_thickness = 1
     line_thickness = 3
+    font_scale = 1
+    font = cv2.FONT_HERSHEY_PLAIN
 
-    cv2.putText(
-        im,
-        f"frame: {frame_id} fps: {fps:.2f} num: {len(tlwhs)}",
-        (0, int(15 * text_scale)),
-        cv2.FONT_HERSHEY_PLAIN,
-        2,
-        (0, 0, 255),
-        thickness=2,
-    )
+    overlay_text = f"Frame: {frame_id} Fps: {fps:.2f} Num: {len(tlwhs)}"
+    (text_w, text_h), baseline = cv2.getTextSize(overlay_text, font, font_scale, text_thickness)
+    x, y = 0, int(15 * text_scale)
+    cv2.rectangle(im, (x, y - text_h - baseline), (x + text_w, y + baseline), (0, 0, 0), -1)
+    cv2.putText(im, overlay_text, (x, y), font, font_scale, (255, 255, 255), thickness=text_thickness)
 
     for i, tlwh in enumerate(tlwhs):
         x1, y1, w, h = tlwh
@@ -208,13 +207,7 @@ def plot_tracking(
             id_text = id_text + ", {}".format(int(ids2[i]))
         color = get_color(abs(obj_id))
         cv2.rectangle(im, int_box[0: 2], int_box[2: 4], color=color, thickness=line_thickness)
-        cv2.putText(
-            im,
-            id_text,
-            (int_box[0], int_box[1]),
-            cv2.FONT_HERSHEY_PLAIN,
-            text_scale,
-            (0, 0, 255),
-            thickness=text_thickness,
-        )
+        (id_text_w, id_text_h), id_baseline = cv2.getTextSize(id_text, font, 1.5, text_thickness)
+        cv2.rectangle(im, (int_box[0], int_box[1] - id_text_h - id_baseline), (int_box[0] + id_text_w, int_box[1] + id_baseline), (0, 0, 0), -1)
+        cv2.putText(im, id_text, (int_box[0], int_box[1]), font, 1.5, (255, 255, 255), thickness=text_thickness)
     return im

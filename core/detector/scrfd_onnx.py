@@ -64,7 +64,7 @@ def distances_to_keypoints(points: np.ndarray, distance: np.ndarray, max_shape: 
     return np.stack(preds, axis=-1)
 
 
-class SCRFDONNX:
+class ScrfdONNX:
     """
     SCRFD face detector
     """

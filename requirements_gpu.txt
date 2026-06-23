@@ -10,9 +10,10 @@ PyYAML~=6.0.3
 tqdm~=4.68
 requests~=2.34
 
-# export onnx
+# Export onnx
 onnx~=1.22
 onnxscript~=0.7
+onnxconverter-common~=1.16
 
 # Inference
 onnxruntime-gpu~=1.26

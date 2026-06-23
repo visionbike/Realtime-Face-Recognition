@@ -13,7 +13,8 @@ from torchvision import transforms
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
-from core.detector.scrfd_onnx import SCRFD
+from core.constants import IMAGE_EXTS
+from core.detector.scrfd_onnx import ScrfdONNX
 from core.recognizer.arcface import iresnet_inference
 from core.recognizer.feature_store import read_features
 from core.aligner.alignment import align_face
@@ -26,7 +27,6 @@ CONFIG_PATH = ROOT_DIR / "cfgs" / "config.yaml"
 DETECTOR_WEIGHTS = ROOT_DIR / "weights" / "detection" / "scrfd_2.5g_bnkps.onnx"
 RECOGNIZER_WEIGHTS = ROOT_DIR / "weights" / "recognition" / "ms1mv3_arcface_r50_fp16.pth"
 
-IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
 
 # ArcFace preprocessing: aligned crop is already 112x112 RGB; Resize is a safety net
 _face_preprocess = transforms.Compose(
@@ -51,7 +51,7 @@ def load_config(config_path: Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
-def build_models(config: dict) -> tuple[SCRFD, torch.nn.Module]:
+def build_models(config: dict) -> tuple[ScrfdONNX, torch.nn.Module]:
     """
     Instantiate the SCRFD detector and the ArcFace recognizer.
 
@@ -59,7 +59,7 @@ def build_models(config: dict) -> tuple[SCRFD, torch.nn.Module]:
     :return: Initialized face detector and recognizer.
     """
     det_cfg = config.get("detector", {})
-    detector = SCRFD(
+    detector = ScrfdONNX(
         model_file=str(DETECTOR_WEIGHTS),
         conf_threshold=det_cfg.get("conf_threshold", 0.5),
         nms_threshold=det_cfg.get("nms_threshold", 0.4)
