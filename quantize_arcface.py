@@ -18,7 +18,7 @@ from onnxruntime.quantization.shape_inference import quant_pre_process
 
 # make core importable when run from the project root
 ROOT_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT_DIR / "src" / "realtime_face_recognition_ros2" / "realtime_face_recognition_ros2"))
+sys.path.insert(0, str(ROOT_DIR))
 
 from core.constants import IMAGE_EXTS, BACKBONES
 from core.recognizer.arcface import iresnet_inference

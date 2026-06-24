@@ -1,10 +1,4 @@
-import sys
-from pathlib import Path
 import torch
-
-# make core importable when this file is run as app/export_arcface_onnx.py
-ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT_DIR / "src" / "realtime_face_recognition_ros2" / "realtime_face_recognition_ros2"))
 
 from core.recognizer.arcface import iresnet_inference
 
