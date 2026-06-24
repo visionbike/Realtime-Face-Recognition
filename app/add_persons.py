@@ -11,7 +11,7 @@ from torchvision import transforms
 
 # make core importable when this file is run as app/add_persons.py
 ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(ROOT_DIR / "src" / "realtime_face_recognition_ros2" / "realtime_face_recognition_ros2"))
 
 from core.constants import IMAGE_EXTS
 from core.detector.scrfd_onnx import ScrfdONNX

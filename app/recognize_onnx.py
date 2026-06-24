@@ -9,7 +9,7 @@ import yaml
 
 # make core importable when this file is run as app/recognize_onnx.py
 ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(ROOT_DIR / "src" / "realtime_face_recognition_ros2" / "realtime_face_recognition_ros2"))
 
 from core.detector.scrfd_onnx import ScrfdONNX
 from core.recognizer.arcface_onnx import ArcFaceONNX
