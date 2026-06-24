@@ -17,7 +17,7 @@ from onnxruntime.quantization import (
 from onnxruntime.quantization.shape_inference import quant_pre_process
 
 # make core importable when run from the project root
-ROOT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from core.constants import IMAGE_EXTS, BACKBONES
@@ -287,7 +287,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Convert an ArcFace IResNet .pth checkpoint to an FP32, FP16, or INT8 ONNX model.")
     p.add_argument("-i", "--input", required=True, help="PyTorch checkpoint, e.g. weights/recognition/arcface_r100.pth")
     p.add_argument("-b", "--backbone", choices=BACKBONES, default="r100",help="IResNet backbone variant matching the checkpoint (default: r100).")
-    p.add_argument("-c", "--calib-dir", required=True, help="Folder of ALIGNED 112x112 face crops for calibration.")
+    p.add_argument("-c", "--calib-dir", default=None, help="Folder of ALIGNED 112x112 face crops for calibration (required for --precision int8).")
     p.add_argument(
         "-p", "--precision", choices=("fp32", "fp16", "int8"), default="int8",
         help="Output precision. fp32: plain export. fp16: half-precision weights "
@@ -316,6 +316,7 @@ def main() -> None:
     pth_path = Path(args.input)
     if not pth_path.exists():
         raise FileNotFoundError(f"Checkpoint not found: {pth_path}")
+
     if args.precision == "int8" and not args.calib_dir:
         raise ValueError("--calib-dir is required for --precision int8 (needed for calibration).")
 
