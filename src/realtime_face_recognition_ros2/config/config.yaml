@@ -1,0 +1,19 @@
+recognizer_node:
+  ros__parameters:
+    # --- detector ---
+    conf_threshold: 0.5
+    nms_threshold: 0.4
+    # --- tracker ---
+    track_threshold: 0.5
+    match_threshold: 0.8
+    dup_iou_dist_threshold: 0.15
+    aspect_ratio_threshold: 1.6
+    min_box_area: 10.0
+    # --- recognizer ---
+    similarity_threshold: 0.5
+    match_iou_threshold: 0.8
+    unknown_retry_interval: 5.0
+    unknown_fast_interval: 0.01
+    unknown_fast_retries: 3
+    min_face_size: 60.0
+    edge_margin: 8.0

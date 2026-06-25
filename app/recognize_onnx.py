@@ -11,6 +11,7 @@ import yaml
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR / "src" / "realtime_face_recognition_ros2" / "realtime_face_recognition_ros2"))
 
+from core.constants import TRACKING_INPUT_SIZE
 from core.detector.scrfd_onnx import ScrfdONNX
 from core.recognizer.arcface_onnx import ArcFaceONNX
 from core.recognizer.feature_store import read_features, compare_embeddings
@@ -26,9 +27,6 @@ CONFIG_PATH = ROOT_DIR / "cfgs" / "config.yaml"
 DETECTOR_WEIGHTS = ROOT_DIR / "weights" / "detection" / "scrfd_2.5g_bnkps.onnx"
 RECOGNIZER_WEIGHTS = ROOT_DIR / "weights" / "recognition" / "arcface_r100_int8.onnx"
 FEATURES_PATH = ROOT_DIR / "datasets" / "features"
-
-# model input size used for both detection-tracking and the tracker rescale
-TRACKING_INPUT_SIZE = (640, 640)
 
 
 def load_config(config_path: Path) -> dict:

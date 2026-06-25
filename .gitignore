@@ -19,3 +19,9 @@ weights/
 datasets/*
 !datasets/calib/
 *.npz
+
+# ROS 2 / colcon build artifacts
+build/
+install/
+log/
+.cache/

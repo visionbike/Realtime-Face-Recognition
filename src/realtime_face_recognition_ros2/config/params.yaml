@@ -1,0 +1,31 @@
+oakd_camera_node:
+  ros__parameters:
+    image_topic: "/image_raw"
+    fps: 30.0
+    frame_id: "oak_rgb_camera_optical_frame"
+    width: 1280
+    height: 720
+    device_id: ""
+
+camera_node:
+  ros__parameters:
+    video_source: "0"
+    image_topic: "/image_raw"
+    fps: 30.0
+    frame_id: "camera"
+
+recognizer_node:
+  ros__parameters:
+    detector_weights: "/home/felix/projects/Realtime-Face-Recognition/weights/detection/scrfd_2.5g_bnkps.onnx"
+    recognizer_weights: "/home/felix/projects/Realtime-Face-Recognition/weights/recognition/arcface_r100_int8.onnx"
+    features_path: "/home/felix/projects/Realtime-Face-Recognition/datasets/features"
+    device_id: -1
+    image_topic: "/image_raw"
+    results_topic: "/face_recognition/results"
+
+viewer_node:
+  ros__parameters:
+    image_topic: "/image_raw"
+    results_topic: "/face_recognition/results"
+    window_name: "Face Recognition"
+    frame_buffer: 60

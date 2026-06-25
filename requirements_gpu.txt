@@ -9,6 +9,7 @@ Pillow~=12.2
 PyYAML~=6.0.3
 tqdm~=4.68
 requests~=2.34
+depthai~=3.7
 
 # Export onnx
 onnx~=1.22
